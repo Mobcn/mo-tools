@@ -2,17 +2,18 @@ import { createApp, defineAsyncComponent } from 'vue';
 import ElementPlus from 'element-plus';
 import { buildGetActualPathFunction, buildGetAsyncComponentFunction } from '../build-function.js';
 
+// 引入monaco-editor
 require.config({ paths: { vs: 'https://cdn.staticfile.org/monaco-editor/0.36.1/min/vs' } });
-require(['vs/editor/editor.main'], () => {
-    const getActualPath = buildGetActualPathFunction(import.meta.url);
-    const getAsyncComponent = buildGetAsyncComponentFunction({ 'monaco-editor': monaco, alasql });
+const asyncMonacoEditor = new Promise((rev) => require(['vs/editor/editor.main'], () => rev(monaco)));
 
-    const vm = createApp(defineAsyncComponent(() => getAsyncComponent(getActualPath('@/App.vue'))));
+const getActualPath = buildGetActualPathFunction(import.meta.url);
+const getAsyncComponent = buildGetAsyncComponentFunction({ 'async-monaco-editor': asyncMonacoEditor, alasql });
 
-    vm.config.globalProperties.$getActualPath = getActualPath;
-    vm.config.globalProperties.$getAsyncComponent = getAsyncComponent;
+const vm = createApp(defineAsyncComponent(() => getAsyncComponent(getActualPath('@/App.vue'))));
 
-    vm.use(ElementPlus);
+vm.config.globalProperties.$getActualPath = getActualPath;
+vm.config.globalProperties.$getAsyncComponent = getAsyncComponent;
 
-    vm.mount('#app');
-});
+vm.use(ElementPlus);
+
+vm.mount('#app');

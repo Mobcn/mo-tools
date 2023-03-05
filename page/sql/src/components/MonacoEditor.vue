@@ -4,7 +4,7 @@
 
 <script setup>
 import { onMounted, ref } from 'vue';
-import monaco from 'monaco-editor';
+import asyncMonacoEditor from 'async-monaco-editor';
 import GitHubTheme from '../assets/monaco-editor/theme/GitHub.json';
 import SQLKeywords from '../assets/monaco-editor/languages/sql-keywords.json';
 
@@ -57,7 +57,7 @@ let monacoEditor;
 /**
  * 编辑器设置
  */
-const editorSetting = () => {
+const editorSetting = (monaco) => {
     // 空提示前缀
     const emptyPreffixs = [
         'database',
@@ -111,18 +111,20 @@ const editorSetting = () => {
 };
 
 // 挂载后
-onMounted(() => {
-    // 编辑器设置
-    editorSetting();
-    // 编辑器DOM元素
-    const editorDOM = editorComponent.value;
-    // 编辑器参数
-    const options = Object.assign({}, defaultOptions, props.options);
-    // 创建编辑器
-    monacoEditor = monaco.editor.create(editorDOM, options);
-    // 监听内容变化
-    monacoEditor.onDidChangeModelContent(() => emits('update:code', monacoEditor.getValue()));
-});
+onMounted(() =>
+    asyncMonacoEditor.then((monaco) => {
+        // 编辑器设置
+        editorSetting(monaco);
+        // 编辑器DOM元素
+        const editorDOM = editorComponent.value;
+        // 编辑器参数
+        const options = Object.assign({}, defaultOptions, props.options);
+        // 创建编辑器
+        monacoEditor = monaco.editor.create(editorDOM, options);
+        // 监听内容变化
+        monacoEditor.onDidChangeModelContent(() => emits('update:code', monacoEditor.getValue()));
+    })
+);
 
 defineExpose({
     /**
