@@ -3,7 +3,7 @@
         <el-header height="40vh">
             <div class="mo-sql__top">
                 <div class="mo-sql__editor">
-                    <monaco-editor v-model:code="code" :options="options" />
+                    <monaco-editor ref="moEditor" v-model:code="code" :options="options" />
                 </div>
                 <div class="mo-sql__exec">
                     <el-button type="primary" :icon="CaretRight" :loading="loading" @click="execSQL">执行</el-button>
@@ -25,15 +25,19 @@ import { CaretRight } from '@element-plus/icons-vue';
 import MonacoEditor from './MonacoEditor.vue';
 import alasql from 'alasql';
 
-const placeholder = `-- create table table1 (
---     field1 string,
---     field2 number
+const placeholder = `-- CREATE TABLE table1 (
+--     field1 VARCHAR NOTNULL DEFAULT '',
+--     field2 INT DEFAULT 0
 -- );
 
--- insert into table1 (field1, field2) values ('string', 0);
+-- INSERT INTO table1 (field1) VALUE ('string1');
+-- INSERT INTO table1 (field2) VALUE (2);
+-- INSERT INTO table1 (field1, field2) VALUE ('string2', 3);
 
--- select * from table1;`;
+-- SELECT * FROM table1;`;
 
+// 编辑器组件
+const moEditor = ref();
 // SQL代码
 const code = ref(placeholder);
 // 编辑器参数
@@ -54,7 +58,8 @@ const execSQL = () => {
     tableHeader.splice(0);
     tableData.splice(0);
     message.value = '';
-    const sqls = code.value.split(';').filter((sql) => sql.trim() !== '' && !sql.trim().startsWith('--'));
+    const execCode = moEditor.value.getSelection() || code.value;
+    const sqls = execCode.split(';').filter((sql) => sql.trim() !== '' && !sql.trim().startsWith('--'));
     if (sqls.length > 0) {
         alasql(sqls)
             .then((res) => {

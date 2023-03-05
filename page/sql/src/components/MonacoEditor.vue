@@ -3,9 +3,10 @@
 </template>
 
 <script setup>
-import { defineEmits, defineProps, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import monaco from 'monaco-editor';
-import GitHubTheme from '../theme/monaco-theme/GitHub.json';
+import GitHubTheme from '../assets/monaco-editor/theme/GitHub.json';
+import SQLKeywords from '../assets/monaco-editor/languages/sql-keywords.json';
 
 // 参数
 const props = defineProps({
@@ -48,22 +49,88 @@ const defaultOptions = {
         enabled: false
     }
 };
-
 // 编辑器组件
 const editorComponent = ref();
+// 编辑器对象
+let monacoEditor;
+
+/**
+ * 编辑器设置
+ */
+const editorSetting = () => {
+    // 空提示前缀
+    const emptyPreffixs = [
+        'database',
+        'table',
+        'view',
+        'index',
+        'into',
+        'set',
+        'distinct',
+        'from',
+        'join',
+        'on',
+        'where',
+        'between',
+        'like',
+        'and',
+        'or',
+        'in',
+        'order by',
+        'group by',
+        'having'
+    ];
+    // 默认提示
+    const defaultSuggestions = SQLKeywords.map((item) => ({
+        label: item,
+        kind: monaco.languages.CompletionItemKind.Keyword,
+        insertText: item
+    }));
+    const getDefaultSuggestions = () => JSON.parse(JSON.stringify(defaultSuggestions));
+    // SQL代码提示设置
+    monaco.languages.registerCompletionItemProvider('sql', {
+        provideCompletionItems: (model, position) => {
+            const { lineNumber, column } = position;
+            // 光标前文本
+            const textBeforePointer = model.getValueInRange({
+                startLineNumber: lineNumber,
+                startColumn: 0,
+                endLineNumber: lineNumber,
+                endColumn: column
+            });
+            // 输入数组
+            const tokens = textBeforePointer.trim().split(/\s+/);
+            // 上一输入
+            const preToken = tokens[tokens.length - 2]?.toLowerCase();
+
+            return { suggestions: emptyPreffixs.includes(preToken) ? [] : getDefaultSuggestions() };
+        }
+    });
+    // 编辑器主题
+    monaco.editor.defineTheme('GitHub', GitHubTheme);
+};
 
 // 挂载后
 onMounted(() => {
+    // 编辑器设置
+    editorSetting();
     // 编辑器DOM元素
     const editorDOM = editorComponent.value;
     // 编辑器参数
     const options = Object.assign({}, defaultOptions, props.options);
-    // 编辑器主题
-    monaco.editor.defineTheme('GitHub', GitHubTheme);
     // 创建编辑器
-    const monacoEditor = monaco.editor.create(editorDOM, options);
+    monacoEditor = monaco.editor.create(editorDOM, options);
     // 监听内容变化
     monacoEditor.onDidChangeModelContent(() => emits('update:code', monacoEditor.getValue()));
+});
+
+defineExpose({
+    /**
+     * 获取选中文本
+     *
+     * @returns {string}
+     */
+    getSelection: () => monacoEditor.getModel().getValueInRange(monacoEditor.getSelection())
 });
 </script>
 
