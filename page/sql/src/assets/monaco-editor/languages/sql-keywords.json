@@ -189,6 +189,7 @@
     "MERGE",
     "MIN",
     "MINUTE",
+    "MODIFY",
     "MODULE",
     "MONTH",
     "NAMES",
