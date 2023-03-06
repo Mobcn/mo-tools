@@ -1,26 +1,24 @@
 <template>
     <el-container class="mo-sql">
-        <el-header height="40vh">
-            <div class="mo-sql__top">
-                <div class="mo-sql__editor">
-                    <monaco-editor ref="moEditor" v-model:code="code" :options="options" />
-                </div>
-                <div class="mo-sql__exec">
-                    <el-button type="primary" :icon="CaretRight" :loading="loading" @click="execSQL">执行</el-button>
-                </div>
+        <el-aside class="mo-sql__aside">
+            <monaco-editor ref="moEditor" v-model:code="code" :options="options" />
+        </el-aside>
+        <el-main class="mo-sql__main">
+            <div class="mo-sql__exec">
+                <el-button type="primary" :icon="CaretRight" :loading="loading" @click="execSQL">执行</el-button>
             </div>
-        </el-header>
-        <el-main>
-            <el-table v-if="tableHeader.length > 0" :data="tableData" height="100%" style="width: 100%" border>
-                <el-table-column
-                    v-for="header in tableHeader"
-                    :key="header"
-                    :prop="header"
-                    :label="header"
-                    :formatter="(row, column, value) => (value == null ? 'null' : value)"
-                />
-            </el-table>
-            <el-input v-if="message !== ''" v-model="message" autosize type="textarea" readonly resize="none" />
+            <div class="mo-sql__result">
+                <el-table v-if="tableHeader.length > 0" :data="tableData" height="100%" border>
+                    <el-table-column
+                        v-for="header in tableHeader"
+                        :key="header"
+                        :prop="header"
+                        :label="header"
+                        :formatter="(row, column, value) => (value == null ? 'null' : value)"
+                    />
+                </el-table>
+                <el-input v-if="message !== ''" v-model="message" autosize type="textarea" readonly resize="none" />
+            </div>
         </el-main>
     </el-container>
 </template>
@@ -93,18 +91,29 @@ const execSQL = () => {
     height: 100%;
 }
 
-.mo-sql__top {
+.mo-sql__aside {
     display: flex;
-    flex-direction: column;
-    height: 100%;
+    overflow: hidden;
+    width: 50vw;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
-.mo-sql__editor {
+.mo-sql__main {
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #ecf5ff;
+}
+
+.mo-sql__result {
     flex: 1;
     height: 0;
 }
 
 .mo-sql__exec {
-    padding-top: 20px;
+    padding-bottom: 5px;
 }
 </style>
