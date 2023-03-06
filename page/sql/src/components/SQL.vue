@@ -12,7 +12,13 @@
         </el-header>
         <el-main>
             <el-table v-if="tableHeader.length > 0" :data="tableData" height="100%" style="width: 100%" border>
-                <el-table-column v-for="header in tableHeader" :key="header" :prop="header" :label="header" />
+                <el-table-column
+                    v-for="header in tableHeader"
+                    :key="header"
+                    :prop="header"
+                    :label="header"
+                    :formatter="(row, column, value) => (value == null ? 'null' : value)"
+                />
             </el-table>
             <el-input v-if="message !== ''" v-model="message" autosize type="textarea" readonly resize="none" />
         </el-main>
