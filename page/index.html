@@ -28,7 +28,7 @@
         </style>
         <a class="card" target="_blank" href="">
             <img class="icon" src="" />
-            <div class="title"></div>
+            <div class="title"><slot></slot></div>
         </a>
     </template>
 
@@ -36,12 +36,10 @@
     <script type="text/javascript">
         class MoToolsItem extends HTMLElement {
             connectedCallback() {
-                const content = document.getElementById('mo-tools-item-template').content.cloneNode(true);
-                const shadow = this.attachShadow({ mode: 'open' });
-                shadow.append(content);
-                shadow.querySelector('.card').href = this.getAttribute('href');
-                shadow.querySelector('.icon').src = this.getAttribute('icon');
-                shadow.querySelector('.title').textContent = this.textContent;
+                this.attachShadow({ mode: 'open' });
+                this.shadowRoot.append(document.getElementById('mo-tools-item-template').content.cloneNode(true));
+                this.shadowRoot.querySelector('.card').href = this.getAttribute('href');
+                this.shadowRoot.querySelector('.icon').src = this.getAttribute('icon');
             }
         }
         window.customElements.define('mo-tools-item', MoToolsItem);
