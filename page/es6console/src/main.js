@@ -28,7 +28,7 @@ function transformByBabel(delayTime) {
                     console.log(111);
                     clearInterval(delayInterval);
                     try {
-                        const babelCode = Babel.transform(input.value, { presets: ['env'] }).code;
+                        const babelCode = Babel.transform(input.value, { presets: ['env', 'react'] }).code;
                         output.setAttribute('value', babelCode);
                     } catch (error) {}
                 }
