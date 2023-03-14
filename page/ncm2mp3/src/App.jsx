@@ -69,7 +69,7 @@ function App() {
 
     return (
         <div className="h-screen box-border bg-blue-50">
-            <div className="flex flex-col items-start w-2/3 max-w-6xl h-full mx-auto bg-white">
+            <div className="flex flex-col items-start w-full max-w-6xl h-full mx-auto bg-white">
                 <Toolbar
                     hasFile={() => getMusicList().length > 0}
                     onSelectFiles={handleSelectFiles}
