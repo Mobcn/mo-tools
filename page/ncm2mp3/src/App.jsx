@@ -1,24 +1,23 @@
-import { createSignal, For } from 'solid-js';
-import Plus from './components/icon/Plus.jsx';
+import { createSignal } from 'solid-js';
+import Toolbar from './components/Toolbar.jsx';
+import MusicList from './components/MusicList.jsx';
 import decrypt from 'decrypt';
 
 /**
- * @typedef {Object} MusicInfo 音乐信息
- * @property {string} album 音乐名
- * @property {string} artist 演唱者
- * @property {Blob} blob 二进制对象
- * @property {string} ext 扩展名
- * @property {string} file 文件下载地址
- * @property {string} mime 文件类型
- * @property {string} picture 封面地址
- * @property {string} rawExt 原扩展名
- * @property {string} rawFilename 原文件名
- * @property {string} title 标题
+ * @typedef {import("./components/MusicList").MusicInfo} MusicInfo
  */
 
 /**
- * 应用
+ * 支持的后缀
+ *
+ * @type {string[]}
  */
+ const exts = [
+    '.ncm','.uc','.kwm','.xm','.wav','.mp3','.flac','.m4a','.ogg','.tm0','.tm3','.qmc3','.qmc2','.qmc0','.qmcflac',
+    '.qmcogg', '.tkm','.bkcmp3','.bkcm4a','.bkcflac','.bkcwav','.bkcape','.bkcogg','.bkcwma','.mggl','.mflac','.mflac0',
+    '.mgg','.mgg1', '.mgg0','.666c6163','.6d7033','.6f6767','.6d3461','.776176','.tm2','.tm6','.cache','.vpr','.kgm','.kgma'
+];
+
 function App() {
     /**
      * 音乐列表
@@ -32,7 +31,10 @@ function App() {
      */
     const handleSelectFiles = async () => {
         // 获取文件句柄
-        const fileHandles = await showOpenFilePicker({ multiple: true });
+        const fileHandles = await showOpenFilePicker({
+            types: [{ description: 'Audios', accept: { 'audio/*': exts } }],
+            multiple: true
+        });
         // 批量转换
         const infos = await Promise.all(
             fileHandles.map(async (fileHandle) => {
@@ -44,28 +46,36 @@ function App() {
         setMusicList(infos);
     };
 
+    /**
+     * 删除
+     */
+    const handleRemove = (index) => {
+        const newList = [...getMusicList()];
+        newList.splice(index, 1);
+        setMusicList(newList);
+    };
+
+    /**
+     * 全部下载
+     */
+    const handleDownloadAll = () => {
+        for (const musicInfo of getMusicList()) {
+            const link = document.createElement('a');
+            link.download = musicInfo.rawFilename + '.' + musicInfo.ext;
+            link.href = musicInfo.file;
+            link.click();
+        }
+    };
+
     return (
-        <div className="h-screen box-border p-1 bg-red-100">
-            <div className="flex flex-col items-start w-2/3 max-w-6xl h-full mx-auto bg-gray-100">
-                <button
-                    className="flex justify-center items-center pl-1 pr-3 rounded bg-green-400 hover:bg-green-500 active:bg-green-600 text-white"
-                    onClick={handleSelectFiles}
-                >
-                    <Plus className="inline-block w-7 h-7" />
-                    <span className="text-base">选择需要转换的文件</span>
-                </button>
-                <For each={getMusicList()}>
-                    {
-                        /** @type {(musicInfo: MusicInfo) => JSX.Element} */
-                        (musicInfo) => (
-                            <div>
-                                <a href={musicInfo.file} download={`${musicInfo.rawFilename}.${musicInfo.ext}`}>
-                                    {musicInfo.rawFilename}
-                                </a>
-                            </div>
-                        )
-                    }
-                </For>
+        <div className="h-screen box-border bg-blue-50">
+            <div className="flex flex-col items-start w-2/3 max-w-6xl h-full mx-auto bg-white">
+                <Toolbar
+                    hasFile={() => getMusicList().length > 0}
+                    onSelectFiles={handleSelectFiles}
+                    onDownloadAll={handleDownloadAll}
+                />
+                <MusicList list={getMusicList()} onRemove={handleRemove} />
             </div>
         </div>
     );
