@@ -5,11 +5,6 @@
     // tag setting
     importToTag: {
         js: {
-            // Babel
-            'babel-standalone': {
-                varName: 'Babel',
-                url: 'https://cdn.staticfile.org/babel-standalone/7.21.2/babel.min.js'
-            },
             // decrypt
             decrypt: {
                 varName: 'decrypt',
@@ -27,5 +22,8 @@
         // SolidJS
         'solid-js': 'https://npm.elemecdn.com/solid-js@1.6.13/dist/dev.js',
         'solid-js/web': 'https://npm.elemecdn.com/solid-js@1.6.13/web/dist/dev.js',
+
+        // Browser Babel Solid
+        'mo-browser-babel-solid': 'https://npm.elemecdn.com/mo-browser-babel-solid@1.0.0/mo-browser-babel-solid.min.js'
     }
 }))();
