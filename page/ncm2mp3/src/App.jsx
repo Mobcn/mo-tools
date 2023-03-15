@@ -12,10 +12,48 @@ import decrypt from 'decrypt';
  *
  * @type {string[]}
  */
- const exts = [
-    '.ncm','.uc','.kwm','.xm','.wav','.mp3','.flac','.m4a','.ogg','.tm0','.tm3','.qmc3','.qmc2','.qmc0','.qmcflac',
-    '.qmcogg', '.tkm','.bkcmp3','.bkcm4a','.bkcflac','.bkcwav','.bkcape','.bkcogg','.bkcwma','.mggl','.mflac','.mflac0',
-    '.mgg','.mgg1', '.mgg0','.666c6163','.6d7033','.6f6767','.6d3461','.776176','.tm2','.tm6','.cache','.vpr','.kgm','.kgma'
+const exts = [
+    '.ncm',
+    '.uc',
+    '.kwm',
+    '.xm',
+    '.wav',
+    '.mp3',
+    '.flac',
+    '.m4a',
+    '.ogg',
+    '.tm0',
+    '.tm3',
+    '.qmc3',
+    '.qmc2',
+    '.qmc0',
+    '.qmcflac',
+    '.qmcogg',
+    '.tkm',
+    '.bkcmp3',
+    '.bkcm4a',
+    '.bkcflac',
+    '.bkcwav',
+    '.bkcape',
+    '.bkcogg',
+    '.bkcwma',
+    '.mggl',
+    '.mflac',
+    '.mflac0',
+    '.mgg',
+    '.mgg1',
+    '.mgg0',
+    '.666c6163',
+    '.6d7033',
+    '.6f6767',
+    '.6d3461',
+    '.776176',
+    '.tm2',
+    '.tm6',
+    '.cache',
+    '.vpr',
+    '.kgm',
+    '.kgma'
 ];
 
 function App() {
@@ -25,6 +63,13 @@ function App() {
      * @type {[() => MusicInfo[], (newMusicList: MusicInfo[]) => void]}
      */
     const [getMusicList, setMusicList] = createSignal([]);
+
+    /**
+     * 是否存在文件
+     *
+     * @return {boolean}
+     */
+    const hasFile = () => getMusicList().length > 0;
 
     /**
      * 选择文件
@@ -68,14 +113,10 @@ function App() {
     };
 
     return (
-        <div className="h-screen box-border bg-blue-50">
+        <div className="h-full box-border bg-blue-50">
             <div className="flex flex-col items-start w-full max-w-6xl h-full mx-auto bg-white">
-                <Toolbar
-                    hasFile={() => getMusicList().length > 0}
-                    onSelectFiles={handleSelectFiles}
-                    onDownloadAll={handleDownloadAll}
-                />
-                <MusicList list={getMusicList()} onRemove={handleRemove} />
+                <Toolbar hasFile={hasFile} onSelectFiles={handleSelectFiles} onDownloadAll={handleDownloadAll} />
+                {hasFile() && <MusicList list={getMusicList()} onRemove={handleRemove} />}
             </div>
         </div>
     );

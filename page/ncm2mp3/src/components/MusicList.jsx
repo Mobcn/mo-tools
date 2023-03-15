@@ -34,10 +34,15 @@ function MusicItem(props) {
         <div className="flex w-full items-center p-2 border-t bg-gray-50">
             <img className="inline-block w-20 h-20" src={picture} />
             <audio className="ml-2" src={file} controls></audio>
-            <div className="flex-1 ml-2 text-blue-400 hover:text-blue-500 cursor-pointer" onClick={handleDownload}>
-                <Download className="inline-block relative bottom-px" />
-                <span>下载</span>
-                <span className="ml-2 align-middle">{fullName}</span>
+            <div
+                className="flex-1 ml-2 text-blue-400 hover:text-blue-500 active:text-blue-600 cursor-pointer"
+                onClick={handleDownload}
+            >
+                <span className="hover:border-b-2 hover:border-blue-500 active:border-blue-600">
+                    <Download className="inline-block relative bottom-px" />
+                    <span>下载</span>
+                    <span className="ml-2 align-middle">{fullName}</span>
+                </span>
             </div>
             <button
                 className="flex justify-center items-center px-2 py-1 rounded bg-red-400 hover:bg-red-500 active:bg-red-600 text-white"
