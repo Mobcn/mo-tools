@@ -114,7 +114,7 @@ function App() {
 
     return (
         <div className="h-full box-border bg-blue-50">
-            <div className="flex flex-col items-start w-full max-w-6xl h-full mx-auto bg-white">
+            <div className="flex flex-col items-start w-full min-w-[56rem] max-w-6xl h-full mx-auto bg-white">
                 <Toolbar hasFile={hasFile} onSelectFiles={handleSelectFiles} onDownloadAll={handleDownloadAll} />
                 {hasFile() && <MusicList list={getMusicList()} onRemove={handleRemove} />}
             </div>
