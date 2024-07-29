@@ -1,5 +1,5 @@
 // 编辑器VS引入路径
-const editorVS = 'https://cdn.staticfile.org/monaco-editor/0.36.1/min/vs';
+const editorVS = 'https://cdn.staticfile.net/monaco-editor/0.36.1/min/vs';
 // 编辑器Loader引入路径
 const editorLoader = editorVS + '/loader.js';
 
