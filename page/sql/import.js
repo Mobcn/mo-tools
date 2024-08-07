@@ -6,7 +6,7 @@
     importToTag: {
         js: [
             // AlaSQL
-            'https://npm.elemecdn.com/alasql@3.1.0/dist/alasql.min.js',
+            'https://cdn.staticfile.net/alasql/3.1.0/alasql.min.js',
             // Monaco Editor
             'https://cdn.staticfile.net/monaco-editor/0.36.1/min/vs/loader.min.js',
         ],
