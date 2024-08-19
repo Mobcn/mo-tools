@@ -27,7 +27,7 @@
         vue: 'https://cdn.staticfile.net/vue/3.2.37/vue.esm-browser.prod.min.js',
 
         // Element Plus
-        'element-plus': 'https://cdn.staticfile.net/element-plus/2.2.18/index.full.mjs',
+        'element-plus': 'https://registry.npmmirror.com/element-plus/2.2.18/files/dist/index.full.min.mjs',
         'element-plus/': 'https://cdn.staticfile.net/element-plus/2.2.18/',
         '@element-plus/icons-vue': 'https://cdn.staticfile.net/element-plus-icons-vue/2.0.10/index.min.js'
     }
