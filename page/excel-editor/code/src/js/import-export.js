@@ -159,14 +159,14 @@ export function import2Sheet(spreadsheet) {
                     const {
                         r,
                         c,
-                        v: { bg, cl, fc, ff, fs, ht, un, vt, v }
+                        v: { bg, bl, cl, fc, ff, fs, ht, it, tb, un, vt, v }
                     } = cellitem;
                     item.rows[r] ??= rowHeightMap.has(r) ? { cells: {}, height: rowHeightMap.get(r) } : { cells: {} };
                     item.rows[r].cells[c] = {
                         text: v
                     };
                     const bd = borderMap.get(`${r}_${c}`);
-                    if (bd || bg || cl || fc || ff || fs || un) {
+                    if (bg || bl || cl || fc || ff || fs || ht || it || tb || un || vt) {
                         const style = {};
                         bg && (style.bgcolor = bg);
                         cl && (style.strike = true);
@@ -174,11 +174,14 @@ export function import2Sheet(spreadsheet) {
                         ht && (style.align = ht == 0 ? 'center' : ht == 1 ? 'left' : 'right');
                         vt && (style.valign = vt == 0 ? 'middle' : vt == 1 ? 'top' : 'bottom');
                         vt || (style.valign = 'middle');
+                        tb == 2 && (style.textwrap = true);
                         un && (style.underline = true);
-                        if (ff || fs) {
+                        if (bl || ff || fs || it) {
                             style.font = {};
+                            bl && (style.font.bold = true);
                             ff && (style.font.name = ff);
                             fs && (style.font.size = fs);
+                            it && (style.font.italic = true);
                         }
                         if (bd) {
                             style.border = {};
@@ -246,7 +249,6 @@ export function import2Sheet(spreadsheet) {
  */
 export function export2Excel(spreadsheet) {
     const sdata = spreadsheet.getData();
-    debugger;
     var out = xlsxUtils.book_new();
     sdata.forEach(function (xws) {
         var ws = {};
