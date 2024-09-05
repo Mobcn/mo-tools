@@ -171,7 +171,7 @@ export function import2Sheet(spreadsheet) {
                         bg && (style.bgcolor = bg);
                         cl && (style.strike = true);
                         fc && (style.color = fc);
-                        ht && (style.align = ht == 0 ? 'center' : ht == 1 ? 'left' : 'right');
+                        ht != undefined && (style.align = ht == 0 ? 'center' : ht == 1 ? 'left' : 'right');
                         vt && (style.valign = vt == 0 ? 'middle' : vt == 1 ? 'top' : 'bottom');
                         vt || (style.valign = 'middle');
                         tb == 2 && (style.textwrap = true);
