@@ -1,5 +1,8 @@
 import ESEditor from './components/ESEditor.js';
-import Babel from 'babel-standalone';
+import { transform } from '@babel/standalone';
+
+import 'normalize.css';
+import './styles/index.css';
 
 // 自定义标签
 window.customElements.define('es-editor', ESEditor);
@@ -25,10 +28,9 @@ function transformByBabel(delayTime) {
         if (execBabelTime <= Date.now()) {
             const delayInterval = setInterval(() => {
                 if (execBabelTime <= Date.now()) {
-                    console.log(111);
                     clearInterval(delayInterval);
                     try {
-                        const babelCode = Babel.transform(input.value, { presets: ['env', 'react'] }).code;
+                        const babelCode = transform(input.value, { presets: ['env', 'react'] }).code;
                         output.setAttribute('value', babelCode);
                     } catch (error) {}
                 }

@@ -8,7 +8,7 @@
             // Babel
             'babel-standalone': {
                 varName: 'Babel',
-                url: 'https://cdn.staticfile.net/babel-standalone/7.21.2/babel.min.js'
+                url: 'https://cdn.staticfile.net/babel-standalone/7.25.6/babel.min.js'
             }
         },
         css: [

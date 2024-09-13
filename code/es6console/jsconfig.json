@@ -2,14 +2,6 @@
     "compilerOptions": {
         "experimentalDecorators": true,
         "baseUrl": "./",
-        "jsx": "preserve",
-        "paths": {
-            "@/*": [
-                "src/*"
-            ],
-            "static/*": [
-                "public/*"
-            ]
-        }
+        "jsx": "preserve"
     }
 }
