@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "experimentalDecorators": true,
+        "baseUrl": "./",
+        "jsx": "preserve",
+        "paths": {
+            "solid-js": [
+                "./public/import/solid-js@1.6.13/dist/server.js"
+            ],
+            "solid-js/web": [
+                "./public/import/solid-js@1.6.13/web/dev.js"
+            ]
+        }
+    }
+}
