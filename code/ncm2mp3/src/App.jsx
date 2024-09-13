@@ -1,7 +1,7 @@
 import { createSignal } from 'solid-js';
 import Toolbar from './components/Toolbar.jsx';
 import MusicList from './components/MusicList.jsx';
-import decrypt from 'decrypt';
+import decrypt from './utils/decrypt.js';
 
 /**
  * @typedef {import("./components/MusicList").MusicInfo} MusicInfo
