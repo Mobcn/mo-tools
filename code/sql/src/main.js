@@ -2,12 +2,11 @@ import { createApp, defineAsyncComponent } from 'vue';
 import ElementPlus from 'element-plus';
 import { buildGetActualPathFunction, buildGetAsyncComponentFunction } from '../build-function.js';
 
-// 引入monaco-editor
-require.config({ paths: { vs: 'https://cdn.staticfile.org/monaco-editor/0.36.1/min/vs' } });
-const asyncMonacoEditor = new Promise((rev) => require(['vs/editor/editor.main'], () => rev(monaco)));
+import 'normalize.css';
+import 'element-plus/dist/index.css';
 
 const getActualPath = buildGetActualPathFunction(import.meta.url);
-const getAsyncComponent = buildGetAsyncComponentFunction({ 'async-monaco-editor': asyncMonacoEditor, alasql });
+const getAsyncComponent = buildGetAsyncComponentFunction();
 
 const vm = createApp(defineAsyncComponent(() => getAsyncComponent(getActualPath('@/App.vue'))));
 

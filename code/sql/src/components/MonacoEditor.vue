@@ -4,9 +4,29 @@
 
 <script setup>
 import { onMounted, ref } from 'vue';
-import asyncMonacoEditor from 'async-monaco-editor';
 import GitHubTheme from '../assets/monaco-editor/theme/GitHub.json';
 import SQLKeywords from '../assets/monaco-editor/languages/sql-keywords.json';
+
+// 编辑器VS引入路径
+const editorVS = 'https://cdn.staticfile.net/monaco-editor/0.36.1/min/vs';
+// 编辑器Loader引入路径
+const editorLoader = editorVS + '/loader.js';
+// 异步导入monaco对象
+const asyncMonacoEditor = fetch(editorLoader)
+    .then((res) => res.text())
+    .then((textJS) => {
+        textJS = textJS.replace('var h=do', '//var h=do');
+        textJS = textJS.replace('d(h)', 'd(h)\nfetch(r).then(d=>d.text()).then(t=>eval(t))');
+        return eval(
+            `new Promise((rev) => ({
+                execFun: function () {
+                    ${textJS};
+                    this.require.config({paths:{vs:'${editorVS}'}});
+                    this.require(['vs/editor/editor.main'],()=>rev(monaco));
+                }
+            }).execFun())`
+        );
+    });
 
 // 参数
 const props = defineProps({
