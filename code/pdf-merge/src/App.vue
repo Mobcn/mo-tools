@@ -33,7 +33,16 @@
             </el-upload>
             <div class="px-2 mt-2 text-right">共 {{ files.length }} 个文件</div>
             <el-scrollbar class="h-100 px-2.5 mt-2 b-1 b-dashed b-gray-200 overflow-auto rounded-1">
-                <el-tree :data="treeData" :props="{ label: 'label' }" empty-text="没有待合并的文件">
+                <el-tree
+                    ref="treeRef"
+                    :data="treeData"
+                    :props="{ label: 'label' }"
+                    empty-text="没有待合并的文件"
+                    draggable
+                    :allow-drop="(_node1: any, _node2: any, type: string) => type !== 'inner'"
+                    @node-drag-over="handleDragOver"
+                    @node-drag-end="handleDragEnd"
+                >
                     <template #default="{ node, data }">
                         <div class="flex-1 flex justify-between items-center">
                             <span>{{ node.label }}</span>
@@ -59,6 +68,7 @@ import JSZip from 'jszip';
 import { PDFDocument } from 'pdf-lib';
 import type { UploadUserFile } from 'element-plus';
 
+const treeRef = ref<HTMLDivElement>();
 const mergeRef = ref<HTMLDivElement>();
 const fileList = ref<UploadUserFile[]>([]);
 const files = ref<File[]>([]);
@@ -70,11 +80,12 @@ const mergeTreeData = computed<{ label: string; index: number }[]>(() =>
     mergeFiles.value.map((file, index) => ({ label: file.name, index }))
 );
 
+const zipMimeTypes = ['application/x-zip-compressed', 'application/zip', 'application/x-zip'];
 watchEffect(async () => {
     if (fileList.value.length) {
         files.value = [];
         for (const file of fileList.value) {
-            if (file.raw!.type === 'application/x-zip-compressed') {
+            if (zipMimeTypes.includes(file.raw!.type)) {
                 const zipFiles = await unzip(file.raw!);
                 files.value.push(...zipFiles);
             } else {
@@ -95,13 +106,29 @@ function unzip(zipFile: File): Promise<File[]> {
             const jsZip = await JSZip.loadAsync(event.target!.result!, options);
             const files = jsZip.files;
             const pdfFiles: File[] = [];
+            const pdfMap: Map<string, File[]> = new Map();
             for (const fileName in files) {
                 const file = files[fileName];
                 if (file.dir || !file.name.endsWith('.pdf')) {
                     continue;
                 }
                 const blob = await file.async('blob');
-                pdfFiles.push(new File([blob], fileName.split('/').pop()!, { type: 'application/pdf' }));
+                const newFileName = fileName.split('/').pop()!;
+                const regArr = /([0-9]+)(铺|号|座)/.exec(newFileName);
+                let key;
+                if (regArr?.length) {
+                    key = `${regArr[2]}${regArr[1].padStart(5, '0')}`;
+                } else {
+                    key = newFileName;
+                }
+                const arr = pdfMap.get(key) || [];
+                arr.push(new File([blob], newFileName, { type: 'application/pdf' }));
+                pdfMap.set(key, arr);
+            }
+            if (pdfMap.size) {
+                for (const key of [...pdfMap.keys()].sort()) {
+                    pdfFiles.push(...pdfMap.get(key)!);
+                }
             }
             resolve(pdfFiles);
         };
@@ -156,6 +183,24 @@ function download(index: number) {
     a.download = file.name;
     a.click();
     URL.revokeObjectURL(url);
+}
+
+function handleDragOver(_draggingNode: any, dropNode: any) {
+    // 在此事件内修正offset解决el-tree在有滚动条时拖拽提示线错位的问题
+    const itemHeight = (<any>treeRef.value).$el.clientHeight / treeData.value.length;
+    const indicator = <any>document.querySelectorAll('.el-tree__drop-indicator')[1];
+    indicator.style.top = dropNode.data.index * itemHeight + 'px';
+}
+
+function handleDragEnd(before: any, after: any, inner: string) {
+    if (inner === 'none') {
+        return;
+    }
+    const tmpFiles = [...files.value];
+    const tmpFile = tmpFiles[before.data.index];
+    tmpFiles.splice(before.data.index, 1);
+    tmpFiles.splice(after.data.index + (inner === 'before' ? 0 : -1), 0, tmpFile);
+    files.value = tmpFiles;
 }
 </script>
 
