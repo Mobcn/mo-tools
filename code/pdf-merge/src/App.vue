@@ -1,6 +1,6 @@
 <template>
     <div ref="mergeRef" class="w-full flex justify-center mt-5 gap-2">
-        <el-card class="w-85 h-180">
+        <el-card class="min-w-85 w-85 h-180">
             <el-scrollbar class="h-175 px-2">
                 <el-tree :data="mergeTreeData" :props="{ label: 'label' }" empty-text="没有合并的文件">
                     <template #default="{ node, data }">
@@ -15,7 +15,7 @@
                 </el-tree>
             </el-scrollbar>
         </el-card>
-        <el-card class="w-200 h-180">
+        <el-card class="min-w-200 w-200 h-180">
             <div class="mb-2">
                 <el-button type="primary" @click="mergePdf" :disabled="files.length === 0">合并PDF</el-button>
                 <el-button type="danger" @click="files = []" :disabled="files.length === 0">清空</el-button>
